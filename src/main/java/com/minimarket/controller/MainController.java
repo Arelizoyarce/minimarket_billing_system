@@ -1,6 +1,6 @@
 package com.minimarket.controller;
 
-import com.minimarket.config.DatabaseConnection;
+import com.minimarket.config.Conexion;
 import com.minimarket.model.Product;
 import com.minimarket.model.SalesRecord;
 import com.minimarket.patterns.composite.ItemComponent;
@@ -18,16 +18,27 @@ import java.util.stream.Collectors;
 
 public class MainController {
     private Map<String, CartItem> shoppingCart;
-    private SalesSubject salesSubject;
+
+    // Observer: F_Ventas (Sujeto) y F_Productos (Observador)
+    private F_Ventas ventasSujeto;
+
+    // Strategy: Contexto
+    private VentaContext ventaContext;
 
     public MainController() {
         this.shoppingCart = new HashMap<>();
-        this.salesSubject = new SalesSubject();
-        this.salesSubject.attach(new InventoryManager());
+
+        // Configurar Observer
+        this.ventasSujeto = new F_Ventas();
+        this.ventasSujeto.agregar(new F_Productos());
+
+        // Configurar Strategy
+        this.ventaContext = new VentaContext();
     }
 
     public List<Product> getProducts() {
-        return DatabaseConnection.getInstance().getProducts();
+        // Usar nueva clase Conexion (Singleton)
+        return Conexion.getInstance().getProducts();
     }
 
     public void addToCart(ItemComponent item) throws Exception {
@@ -37,12 +48,10 @@ public class MainController {
             if (shoppingCart.containsKey(p.getName())) {
                 currentQtyInCart = shoppingCart.get(p.getName()).getQuantity();
             }
-
             if (p.getStock() < (currentQtyInCart + 1)) {
-                throw new Exception("¡STOCK INSUFICIENTE! Solo quedan " + p.getStock() + " unidades.");
+                throw new Exception("Stock insuficiente: " + p.getStock());
             }
         }
-
         if (shoppingCart.containsKey(item.getName())) {
             shoppingCart.get(item.getName()).addQuantity(1);
         } else {
@@ -55,59 +64,60 @@ public class MainController {
     }
 
     public double calculateCurrentTotal() {
-        return shoppingCart.values().stream()
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
+        return shoppingCart.values().stream().mapToDouble(CartItem::getSubtotal).sum();
     }
 
-    public void clearCart() {
-        shoppingCart.clear();
-    }
+    public void clearCart() { shoppingCart.clear(); }
 
-    public String processSale(String docType, String discountType, boolean hasDelivery) throws Exception {
-        if (shoppingCart.isEmpty()) throw new Exception("El carrito está vacío.");
+    public String processSale(String docType, String discountType, boolean hasDelivery, boolean hasGiftWrap) throws Exception {
+        if (shoppingCart.isEmpty()) throw new Exception("Carrito vacío.");
 
         double subtotal = calculateCurrentTotal();
 
-        DiscountStrategy strategy;
+        // 1. Aplicar STRATEGY
+        EstrategiaDescuento estrategia;
         switch (discountType) {
-            case "VIP": strategy = new VipDiscount(); break;
-            case "SEASONAL": strategy = new SeasonalDiscount(); break;
-            default: strategy = new NoDiscount();
+            case "VIP": estrategia = new DescuentoClienteVIP(); break;
+            case "SEASONAL": estrategia = new DescuentoPorcentaje(20.0); break;
+            default: estrategia = new DescuentoFijo();
         }
-        double total = strategy.applyDiscount(subtotal);
+        ventaContext.setEstrategia(estrategia);
+        double total = ventaContext.calcularTotalFinal(subtotal);
 
-        DocumentFactory factory;
-        if (docType.equals("FACTURA")) factory = new InvoiceFactory();
-        else factory = new TicketFactory();
-
-        SalesDocument doc = factory.createDocument();
-        doc.generateHeader();
+        // 2. Usar FACTORY METHOD (CreadorVenta)
+        Comprobante doc = CreadorVenta.crearComprobante(docType);
+        doc.generarHeader();
 
         for (CartItem cartItem : shoppingCart.values()) {
             ItemComponent item = cartItem.getItem();
             int qty = cartItem.getQuantity();
 
-            doc.addLine(qty + " x " + item.getName() + " (Unit: S/." + item.getPrice() + ") -> S/." + cartItem.getSubtotal());
+            doc.agregarLinea(qty + " x " + item.getName() + " -> S/." + cartItem.getSubtotal());
 
+            // 3. Notificar OBSERVER
             if (item instanceof Product) {
-                salesSubject.notifySale((Product) item, qty);
+                ventasSujeto.notificar((Product) item, qty);
             }
         }
 
-        doc.addLine("----------------------");
-        doc.addLine("Subtotal: S/." + subtotal);
-        doc.addLine("Descuento (" + strategy.getDescription() + "): -S/." + (subtotal - total));
+        doc.agregarLinea("----------------------");
+        doc.agregarLinea("Subtotal: S/." + subtotal);
+        doc.agregarLinea("Desc (" + estrategia.getDescripcion() + "): -S/." + (subtotal - total));
         doc.setTotal(total);
 
+        // 4. Aplicar DECORATOR
         if (hasDelivery) {
-            doc = new DeliveryDecorator(doc);
+            doc = new Delivery(doc);
+        }
+        if (hasGiftWrap) {
+            doc = new EnvolturaRegalo(doc);
         }
 
-        String finalDoc = doc.getPrintableDocument();
+        String finalDoc = doc.obtenerDocumentoImpreso();
 
+        // Guardar Historial
         SalesRecord record = new SalesRecord(docType, total, finalDoc);
-        DatabaseConnection.getInstance().addSaleRecord(record);
+        Conexion.getInstance().addSaleRecord(record);
 
         shoppingCart.clear();
         return finalDoc;
@@ -116,7 +126,7 @@ public class MainController {
     public ProductBundle createSampleBundle() {
         ProductBundle bundle = new ProductBundle("Pack Desayuno");
         List<Product> db = getProducts();
-        if(db.size() >= 4) {
+        if(db.size() >= 2) {
             bundle.addItem(db.get(1));
             bundle.addItem(db.get(3));
         }
@@ -124,7 +134,7 @@ public class MainController {
     }
 
     public List<SalesRecord> getHistoryByDate(String dateQuery) {
-        List<SalesRecord> all = DatabaseConnection.getInstance().getSalesHistory();
+        List<SalesRecord> all = Conexion.getInstance().getSalesHistory();
         if(dateQuery == null || dateQuery.isEmpty()) return all;
         return all.stream().filter(r -> r.getDate().equals(dateQuery)).collect(Collectors.toList());
     }
