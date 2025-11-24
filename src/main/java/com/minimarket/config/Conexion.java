@@ -11,7 +11,6 @@ public class Conexion {
     private String user;
     private String pass;
 
-    // Simulación de tablas en memoria
     private List<Product> mockProducts;
     private List<SalesRecord> salesHistory;
 
@@ -23,7 +22,6 @@ public class Conexion {
         mockProducts = new ArrayList<>();
         salesHistory = new ArrayList<>();
         inicializarDatos();
-        System.out.println("[Singleton] Objeto Conexion creado: " + url);
     }
 
     public static synchronized Conexion getInstance() {
@@ -34,7 +32,7 @@ public class Conexion {
     }
 
     public void conectar() {
-        System.out.println("Conectando a " + url + " con usuario " + user);
+        System.out.println("Conectando a " + url);
     }
 
     private void inicializarDatos() {

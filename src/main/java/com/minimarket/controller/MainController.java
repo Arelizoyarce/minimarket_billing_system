@@ -18,26 +18,17 @@ import java.util.stream.Collectors;
 
 public class MainController {
     private Map<String, CartItem> shoppingCart;
-
-    // Observer: F_Ventas (Sujeto) y F_Productos (Observador)
     private F_Ventas ventasSujeto;
-
-    // Strategy: Contexto
     private VentaContext ventaContext;
 
     public MainController() {
         this.shoppingCart = new HashMap<>();
-
-        // Configurar Observer
         this.ventasSujeto = new F_Ventas();
         this.ventasSujeto.agregar(new F_Productos());
-
-        // Configurar Strategy
         this.ventaContext = new VentaContext();
     }
 
     public List<Product> getProducts() {
-        // Usar nueva clase Conexion (Singleton)
         return Conexion.getInstance().getProducts();
     }
 
@@ -74,7 +65,6 @@ public class MainController {
 
         double subtotal = calculateCurrentTotal();
 
-        // 1. Aplicar STRATEGY
         EstrategiaDescuento estrategia;
         switch (discountType) {
             case "VIP": estrategia = new DescuentoClienteVIP(); break;
@@ -84,7 +74,6 @@ public class MainController {
         ventaContext.setEstrategia(estrategia);
         double total = ventaContext.calcularTotalFinal(subtotal);
 
-        // 2. Usar FACTORY METHOD (CreadorVenta)
         Comprobante doc = CreadorVenta.crearComprobante(docType);
         doc.generarHeader();
 
@@ -94,7 +83,6 @@ public class MainController {
 
             doc.agregarLinea(qty + " x " + item.getName() + " -> S/." + cartItem.getSubtotal());
 
-            // 3. Notificar OBSERVER
             if (item instanceof Product) {
                 ventasSujeto.notificar((Product) item, qty);
             }
@@ -105,7 +93,6 @@ public class MainController {
         doc.agregarLinea("Desc (" + estrategia.getDescripcion() + "): -S/." + (subtotal - total));
         doc.setTotal(total);
 
-        // 4. Aplicar DECORATOR
         if (hasDelivery) {
             doc = new Delivery(doc);
         }
@@ -115,7 +102,6 @@ public class MainController {
 
         String finalDoc = doc.obtenerDocumentoImpreso();
 
-        // Guardar Historial
         SalesRecord record = new SalesRecord(docType, total, finalDoc);
         Conexion.getInstance().addSaleRecord(record);
 

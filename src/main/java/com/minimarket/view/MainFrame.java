@@ -20,12 +20,11 @@ public class MainFrame extends JFrame {
     private JComboBox<String> cbDocType;
     private JComboBox<String> cbDiscount;
     private JCheckBox chkDelivery;
-    private JCheckBox chkGiftWrap; // Nuevo check para envoltura
+    private JCheckBox chkGiftWrap;
 
     private InventoryPanel inventoryPanel;
     private HistoryPanel historyPanel;
 
-    // Colores
     private final Color PRIMARY_GREEN = new Color(39, 174, 96);
     private final Color WHITE_BG      = new Color(255, 255, 255);
 
@@ -62,7 +61,6 @@ public class MainFrame extends JFrame {
         panel.setBackground(WHITE_BG);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // HEADER
         JPanel pnlHeader = new JPanel(new FlowLayout(FlowLayout.LEFT));
         pnlHeader.setBackground(WHITE_BG);
         JLabel lblBrand = new JLabel("Minimarket La Esquina");
@@ -71,7 +69,6 @@ public class MainFrame extends JFrame {
         pnlHeader.add(lblBrand);
         panel.add(pnlHeader, BorderLayout.NORTH);
 
-        // CENTER (Prod + Table)
         JPanel pnlCenter = new JPanel(new BorderLayout(0, 10));
 
         JPanel pnlSelection = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -93,20 +90,19 @@ public class MainFrame extends JFrame {
         pnlCenter.add(new JScrollPane(cartTable), BorderLayout.CENTER);
         panel.add(pnlCenter, BorderLayout.CENTER);
 
-        // RIGHT (Opciones)
         JPanel pnlRight = new JPanel();
         pnlRight.setLayout(new BoxLayout(pnlRight, BoxLayout.Y_AXIS));
         pnlRight.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         pnlRight.setPreferredSize(new Dimension(250, 0));
 
-        String[] docs = {"BOLETA", "FACTURA", "NOTA"}; // Agregada NOTA
+        String[] docs = {"BOLETA", "FACTURA", "NOTA"};
         cbDocType = new JComboBox<>(docs);
 
         String[] discounts = {"Regular", "VIP", "SEASONAL"};
         cbDiscount = new JComboBox<>(discounts);
 
         chkDelivery = new JCheckBox("Delivery (+S/10)");
-        chkGiftWrap = new JCheckBox("Regalo (+S/5)"); // Nuevo
+        chkGiftWrap = new JCheckBox("Regalo (+S/5)");
 
         lblTotalAmt = new JLabel("S/. 0.00");
         lblTotalAmt.setFont(new Font("Segoe UI", Font.BOLD, 30));
@@ -135,7 +131,6 @@ public class MainFrame extends JFrame {
 
         panel.add(pnlRight, BorderLayout.EAST);
 
-        // EVENTOS
         btnAdd.addActionListener(e -> {
             try {
                 controller.addToCart((Product)cbProducts.getSelectedItem());

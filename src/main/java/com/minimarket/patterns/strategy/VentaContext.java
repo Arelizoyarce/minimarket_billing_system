@@ -11,8 +11,4 @@ public class VentaContext {
         if(estrategia == null) return montoBase;
         return estrategia.aplicar(montoBase);
     }
-
-    public String getDescripcionEstrategia() {
-        return estrategia != null ? estrategia.getDescripcion() : "Ninguna";
-    }
 }

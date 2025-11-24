@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75f26c54-370f-4932-b629-2a94b05c71c0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/script.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/config/Conexion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/config/Conexion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/controller/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/observer/F_Productos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/observer/F_Productos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/DescuentoClienteVIP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/DescuentoClienteVIP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/DescuentoFijo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/DescuentoFijo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/VentaContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/patterns/strategy/VentaContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/minimarket/view/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/minimarket/view/MainFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,23 +23,23 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="35t9ijfqfOTCqZJh8Ilw6Xp6JWP" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "git-widget-placeholder": "main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.minimarket.Main" />
